@@ -1,0 +1,45 @@
+auth:
+  adminUser: ${KEYCLOAK_ADMIN}
+  adminPassword: "${KEYCLOAK_ADMIN_PASSWORD}"
+
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: ${PG_HOST}
+  port: ${PG_PORT}
+  user: ${PG_USER}
+  password: "${PG_PASSWORD}"
+  database: keycloak_db
+
+extraEnvVars:
+  - name: KC_HOSTNAME_URL
+    value: "${KEYCLOAK_HOSTNAME_URL}"
+  - name: KC_HOSTNAME_STRICT
+    value: "false"
+  - name: KC_HOSTNAME_STRICT_BACKCHANNEL
+    value: "false"
+  - name: KC_HTTP_ENABLED
+    value: "true"
+
+image:
+  registry: docker.io
+  repository: bitnamilegacy/keycloak
+
+keycloakConfigCli:
+  enabled: false
+
+service:
+  type: NodePort
+  ports:
+    http: 80
+  nodePorts:
+    http: 30080
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1500m
+    memory: 1536Mi

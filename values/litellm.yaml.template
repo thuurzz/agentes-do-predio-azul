@@ -1,0 +1,59 @@
+image:
+  repository: ghcr.io/berriai/litellm-database
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+masterkey: "${LITELLM_MASTER_KEY}"
+
+proxy_config:
+  model_list:
+    - model_name: gpt-3.5-turbo
+      litellm_params:
+        model: openai/gpt-3.5-turbo
+        api_key: placeholder-key
+  general_settings:
+    master_key: os.environ/PROXY_MASTER_KEY
+    allow_client_side_credentials: true
+  litellm_settings:
+    success_callback: ["langfuse"]
+    failure_callback: ["langfuse"]
+
+db:
+  useExisting: true
+  deployStandalone: false
+  endpoint: ${PG_HOST}
+  database: litellm
+  port: ${PG_PORT}
+  url: postgresql://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/litellm
+
+redis:
+  enabled: false
+
+envVars:
+  STORE_MODEL_IN_DB: "True"
+  LANGFUSE_HOST: "${LANGFUSE_HOST:-http://langfuse-web.langfuse.svc.cluster.local:3000}"
+  LANGFUSE_PUBLIC_KEY: "${LANGFUSE_PUBLIC_KEY}"
+  LANGFUSE_SECRET_KEY: "${LANGFUSE_SECRET_KEY}"
+  REDIS_HOST: redis-master.infrastructure.svc.cluster.local
+  REDIS_PORT: "6379"
+  PROXY_BASE_URL: http://localhost:30081
+  GENERIC_CLIENT_ID: litellm
+  GENERIC_CLIENT_SECRET: "${LITELLM_GENERIC_CLIENT_SECRET}"
+  GENERIC_AUTHORIZATION_ENDPOINT: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
+  GENERIC_TOKEN_ENDPOINT: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token
+  GENERIC_USERINFO_ENDPOINT: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/userinfo
+
+service:
+  type: NodePort
+  port: 4000
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+
+migrationJob:
+  enabled: false

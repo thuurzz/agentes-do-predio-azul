@@ -1,0 +1,70 @@
+langfuse:
+  salt:
+    value: "${LANGFUSE_SALT}"
+  nextauth:
+    secret:
+      value: "${LANGFUSE_NEXTAUTH_SECRET}"
+  additionalEnv:
+    - name: NEXTAUTH_URL
+      value: "http://localhost:30082"
+    - name: AUTH_KEYCLOAK_CLIENT_ID
+      value: "langfuse"
+    - name: AUTH_KEYCLOAK_CLIENT_SECRET
+      value: "${LANGFUSE_KEYCLOAK_CLIENT_SECRET}"
+    - name: AUTH_KEYCLOAK_ISSUER
+      value: "${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}"
+    - name: AUTH_DISABLE_USERNAME_PASSWORD
+      value: "false"
+  web:
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 2000m
+        memory: 2Gi
+  worker:
+    resources:
+      requests:
+        cpu: 250m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+postgresql:
+  deploy: false
+  auth:
+    username: ${PG_USER}
+    password: "${PG_PASSWORD}"
+    database: langfuse_db
+  host: ${PG_HOST}
+  directUrl: postgres://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/langfuse_db
+  shadowDatabaseUrl: postgres://${PG_USER}:${PG_PASSWORD}@${PG_HOST}:${PG_PORT}/langfuse_shadow_db
+
+redis:
+  deploy: false
+  host: redis-master.infrastructure.svc.cluster.local
+  port: 6379
+
+clickhouse:
+  auth:
+    password: "${LANGFUSE_CLICKHOUSE_PASSWORD}"
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+s3:
+  auth:
+    rootPassword: "${LANGFUSE_S3_ROOT_PASSWORD}"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 128m
+      memory: 128Mi

@@ -1,0 +1,25 @@
+architecture: standalone
+
+auth:
+  username: ${PG_USER}
+  password: "${PG_PASSWORD}"
+  database: litellm
+  postgresPassword: "${PG_PASSWORD}"
+
+primary:
+  initdb:
+    scripts:
+      create_databases.sql: |
+        CREATE DATABASE keycloak_db;
+        CREATE DATABASE langfuse_db;
+  persistence:
+    enabled: true
+    storageClass: microk8s-hostpath
+    size: 10Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
