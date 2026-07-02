@@ -207,7 +207,19 @@ image:
 
 Ambos precisam de pelo menos 2Gi de limite de memória. Abaixo disso morrem com OOMKilled.
 
-## Destruir
+## Parar / Iniciar cluster
+
+```bash
+# Parar (mantém dados nos PVCs hostpath)
+./scripts/stop-cluster.sh
+# ou: microk8s stop
+
+# Iniciar (serviços voltam automaticamente)
+./scripts/start-cluster.sh
+# ou: microk8s start
+```
+
+## Destruir (perde dados)
 
 ```bash
 kubectl delete namespace infrastructure litellm langfuse
